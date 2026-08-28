@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#030716">
+<title>Events — INSOMNIA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+
+</head>
+<body class="events-page">
+<header class="nav" id="nav">
+<a class="brand" href="index.html"><img class="brand-logo" src="assets/insomnia-header-logo.png" alt="INSOMNIA"></a>
+<nav class="desktop-nav"><a href="events.html">Events</a><a href="contact.html">Contact</a><a class="nav-pass" href="passes.html">Get Passes</a><button class="round-btn menu-open" aria-label="Open menu">☰</button></nav>
+<button class="round-btn mobile-menu menu-open" aria-label="Open menu">☰</button>
+</header>
+
+<main class="events-shell">
+<section class="events-title">
+<div class="eyebrow">PIMS ANNUAL CULTURAL FEST</div>
+<h1>EVENTS</h1>
+<p>Pick a club. Pick an event. Every event gets its own 3:4 poster frame, details and registration link when the final information is ready.</p>
+</section>
+
+<div class="category-tabs" id="tabs"></div>
+
+<section>
+<div class="events-heading"><h2 id="categoryTitle">ALL EVENTS</h2><span id="eventCount"></span></div>
+<div class="event-grid" id="eventGrid"></div>
+</section>
+</main>
+
+<footer class="footer">
+<div><img class="footer-logo" src="assets/insomnia-logo.png" alt="INSOMNIA"><p>The official fest of PiMS Medical College.</p></div>
+<div class="footer-links"><a href="index.html">Home</a><a href="passes.html">Get Passes</a><a href="contact.html">Contact</a></div>
+<div class="footer-signup"><h3>JOIN THE INSOMNIA LIST</h3><p>Lineup drops. Early access. Last-minute releases.</p><form onsubmit="return false"><input type="email" placeholder="Your email..."><button type="submit" aria-label="Join">→</button></form></div>
+<div class="footer-bottom"><span>© 2026 INSOMNIA — PiMS Medical College.</span><span>Built by Arnav Bansal (Batch 2022) — Digital Club</span></div>
+</footer>
+
+<div class="menu-overlay" id="menuOverlay">
+<button class="menu-close round-btn" aria-label="Close menu">×</button>
+<div class="menu-inner">
+<span class="eyebrow">INSOMNIA / NAVIGATION</span>
+<a href="index.html">HOME <span>↗</span></a>
+<a href="events.html">EVENTS <span>↗</span></a>
+<a href="events.html?category=mr-miss-insomnia">MR &amp; MISS INSOMNIA <span>↗</span></a>
+<a href="passes.html">GET PASSES <span>↗</span></a>
+<a href="contact.html">CONTACT <span>↗</span></a>
+</div>
+</div>
+
+<script src="app.js"></script>
+<script>
+const params = new URLSearchParams(location.search);
+const selected = params.get("category") || "all";
+const tabTarget = document.getElementById("tabs");
+
+tabTarget.innerHTML =
+  `<a class="category-tab ${selected==="all"?"active":""}" href="events.html">ALL</a>` +
+  categories.map(c =>
+    `<a class="category-tab ${selected===c.slug?"active":""}" href="events.html?category=${encodeURIComponent(c.slug)}">${c.name}</a>`
+  ).join("");
+
+let list = [];
+if(selected === "all") Object.values(eventData).forEach(a => list.push(...a));
+else list = eventData[selected] || [];
+
+const cat = categories.find(c => c.slug === selected);
+document.getElementById("categoryTitle").textContent =
+  selected === "all" ? "ALL EVENTS" : (cat?.name || "EVENTS");
+document.getElementById("eventCount").textContent =
+  `${list.length} ${list.length === 1 ? "EVENT" : "EVENTS"}`;
+
+const grid = document.getElementById("eventGrid");
+grid.innerHTML = list.length ? list.map((e,i) => `
+<article class="event-frame" style="--rot:${i%2===0 ? "0.6" : "-0.6"}deg">
+  <div class="poster-box">
+    <div>POSTER<br><small>3 : 4</small></div>
+  </div>
+  <div class="event-info">
+    <h3>${e.title}</h3>
+    <p>${e.desc || ""}</p>
+    <div class="event-meta"><div></div><div></div><div></div></div>
+    <button class="register-btn" type="button" disabled>REGISTER</button>
+  </div>
+</article>`).join("") :
+`<div class="empty-state"><strong>EVENTS COMING SOON</strong><br><br>Final event details, posters and registration links will be added here.</div>`;
+</script>
+</body>
+</html>
